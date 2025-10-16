@@ -1340,7 +1340,8 @@ def _combine_schemas(route: HTTPRoute) -> dict[str, Any]:
     }
     # Add schema definitions if available
     if route.schema_definitions:
-        result["$defs"] = route.schema_definitions.copy()
+        # Dirty quick fix for schema_definition not having refs replaced
+        result["$defs"] = _replace_ref_with_defs({"properties": route.schema_definitions}, None)['properties']
 
     # Use lightweight compression - prune additionalProperties and unused definitions
     if result.get("additionalProperties") is False:
